@@ -5,9 +5,9 @@ services:
     user: "frappe"
     network_mode: host
     volumes:
-      - ./docker_folder/dev:/home/frappe/dev
-      - /home/allen/.ssh:/home/frappe/.ssh 
-      - /home/allen/.config/nvim:/home/frappe/.config/nvim 
+      - ./dev:/home/frappe/dev
+      - ~/.ssh:/home/frappe/.ssh 
+      - ~/.config/nvim:/home/frappe/.config/nvim 
     stdin_open: true
     tty: true
     environment:
@@ -47,6 +47,4 @@ services:
 volumes:
   db:
   cache:
-
-
 
