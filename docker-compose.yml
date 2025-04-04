@@ -1,0 +1,52 @@
+services:
+  system:
+    container_name: frappe_dev
+    build: .
+    user: "frappe"
+    network_mode: host
+    volumes:
+      - ./docker_folder/dev:/home/frappe/dev
+      - /home/allen/.ssh:/home/frappe/.ssh 
+      - /home/allen/.config/nvim:/home/frappe/.config/nvim 
+    stdin_open: true
+    tty: true
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      MYSQL_ROOT_PASSWORD: admin
+      MARIADB_ROOT_PASSWORD: admin
+  db:
+    image: mariadb:10.6
+    volumes:
+      - db:/var/lib/mysql
+    network_mode: host
+    healthcheck:
+      test: mysqladmin ping -h localhost --password=admin
+      interval: 1s
+      retries: 20
+    deploy:
+      restart_policy:
+        condition: on-failure
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+      - --skip-innodb-read-only-compressed # Temporary fix for MariaDB 10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MARIADB_ROOT_PASSWORD: admin
+  cache:
+    image: redis:6.2-alpine
+    network_mode: host
+    deploy:
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - cache:/data
+
+volumes:
+  db:
+  cache:
+
+
+
